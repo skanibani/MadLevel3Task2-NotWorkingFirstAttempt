@@ -6,15 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.LinearLayout
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_start.*
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
 class StartFragment : Fragment() {
+
+    private val portalCollection = PortalCollection(arrayListOf<Portal>())
+    private val portalAdapter = PortalAdapter(portalCollection.portals)
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
@@ -28,12 +35,15 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.findViewById<Button>(R.id.button_first).setOnClickListener {
-            findNavController().navigate(R.id.action_AddPortalFragment_to_StartFragment)
-        }
+        rvPortal.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        rvPortal.adapter = portalAdapter;
 
         fab.setOnClickListener{
-            findNavController().navigate(R.id.action_StartFragment_to_AddPortalFragment)
+
+            var args = Bundle()
+            args.putParcelable("PortalCollection", portalCollection)
+
+            findNavController().navigate(R.id.action_StartFragment_to_AddPortalFragment, args)
         }
     }
 }
